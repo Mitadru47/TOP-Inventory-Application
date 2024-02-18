@@ -2,7 +2,9 @@
 
 console.log('This script populates some test items & categories to your database. Specified database as argument - e.g.: node populatedb "mongodb+srv://Admin-Mitadru:DB1234@clustermg.e4fjgoy.mongodb.net/inventoryAppDB?retryWrites=true&w=majority"');
   
-// Get arguments passed on command line -> node populatedb <your MongoDB url>
+// Get arguments passed on command line -> node populatedb <your MongoDB url> 
+    // To prevent hardcoding MongoDB connection string in populatedb.js itself.
+
 const userArgs = process.argv.slice(2);
 
 const Item = require("./models/item");
