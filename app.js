@@ -11,6 +11,22 @@ const catalogRouter = require("./routes/catalog");
 
 var app = express();
 
+// Mongoose Connection - Setup
+
+const mongoose = require("mongoose");
+
+// Set `strictQuery: false` to globally opt into filtering by properties that aren't in the schema
+// Included because it removes preparatory warnings for Mongoose 7.
+mongoose.set("strictQuery", false);
+
+const mongoDB = "mongodb+srv://Admin-Mitadru:DB1234@clustermg.e4fjgoy.mongodb.net/inventoryAppDB?retryWrites=true&w=majority";
+
+async function main() {
+  await mongoose.connect(mongoDB);
+}
+
+main().catch((err) => console.log(err));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
