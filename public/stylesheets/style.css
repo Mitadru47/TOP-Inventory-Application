@@ -1,8 +1,28 @@
 body {
   padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 1rem "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+p{
+  margin-bottom: 0.5rem;
+}
+
+h1{
+  margin-bottom: 1.5rem;
+}
+
+.row{
+  margin-top: 15px;
+}
+
+.sidebar-nav {
+
+  margin-top: 20px;
+
+  padding: 0;
+  list-style: none;
 }
