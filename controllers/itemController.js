@@ -16,12 +16,24 @@ exports.index = asyncHandler(async (req, res, next) => {
 
 // Display list of all items.
 exports.item_list = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Item list");
+  const items = await Item.find().sort({ title: 1 }).exec();
+  res.render("item_list", { title: "Item List", item_list: items });
 });
 
 // Display detail page for a specific book.
 exports.item_detail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Item detail: ${req.params.id}`);
+  
+  const item = await Item.findById(req.params.id).populate("category").exec();
+  
+  if(item === null){
+
+    const error = new Error("Item not found!");
+    error.status = 404;
+
+    return next(error);
+  }
+  
+  res.render("item_detail", { title: item.title, item_detail: item });
 });
 
 // Display item create form on GET.

@@ -1,0 +1,16 @@
+extends layout 
+
+block content
+    h1= "Title: " + title
+
+    p #{item_detail.summary}
+
+    p 
+        each val, index in item_detail.category
+            a(href=val.url) #{val.name}
+
+            if index < item_detail.category.length - 1
+                |,&nbsp;
+
+            //- This adds a comma and a non breaking space after every genre associated with the book 
+            //- except for the last one.
