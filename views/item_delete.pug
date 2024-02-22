@@ -1,0 +1,25 @@
+extends layout
+
+block content 
+
+    h1= title + ": " + item.title
+
+    p #{item.summary}
+    p 
+        each val, index in item.category
+            a(href=val.url) #{val.name}
+      
+            if index < item.category.length - 1
+                |,&nbsp;
+        
+        //- This adds a comma and a non breaking space after every genre associated with the book 
+        //- except for the last one.
+
+    hr
+    p Do you really want to delete this Book?
+
+    form(method='POST')
+
+        input#itemid.form-control(type='hidden', name='itemid', value=item._id )
+        p 
+            button#deleteButton.btn.btn-primary(type='submit') Delete
