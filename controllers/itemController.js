@@ -133,10 +133,86 @@ exports.item_delete_post = asyncHandler(async (req, res, next) => {
 
 // Display item update form on GET.
 exports.item_update_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Item update GET");
+
+  const [item, categories] = await Promise.all([
+
+    await Item.findById(req.params.id).exec(),
+    await Category.find().sort({ name: 1 }).exec()
+  ]);
+
+  // Mark our selected categories as checked.
+  categories.forEach((category) => {
+    if (item.category.includes(category._id)) category.checked = "true";
+  });
+
+  res.render("item_form", { title: "Add Item", item: item, categories: categories });
 });
 
 // Handle item update on POST.
-exports.item_update_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Item update POST");
-});
+exports.item_update_post = [
+
+  // Converting category to an array.
+  (req, res, next) => {
+    if (!Array.isArray(req.body.category)) {
+      req.body.category =
+        typeof req.body.category === "undefined" ? [] : [req.body.category];
+    }
+    next();
+  },
+
+  // Validate and sanitize fields.
+
+  body("title", "Title must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  body("summary", "Summary must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  body("category.*").escape(), 
+  // We use a wildcard (*) in the sanitizer to individually validate each of the genre array entries. 
+  
+  // Process request after validation and sanitization.
+
+  asyncHandler(async (req, res, next) => {
+
+    // Extract the validation errors from a request.
+    const errors = validationResult(req);
+
+    // Create an Item object with escaped/trimmed data and old id.
+    const item = new Item({
+      title: req.body.title,
+      summary: req.body.summary,
+      category: req.body.category,
+
+      _id: req.params.id, // This is required, or a new ID will be assigned!
+    });
+
+    if (!errors.isEmpty()) {
+      // There are errors. Render form again with sanitized values/error messages.
+
+      // Get categories for form.
+      const categories = await Category.find().sort({ name: 1 }).exec();
+  
+      // Mark our selected categories as checked.
+      for (const category of categories) {
+        if (item.category.includes(category._id)) {
+          category.checked = "true";
+        }
+      }
+
+      // In order to mark the categories that were checked by the user we iterate through all the categories and add the 
+      // checked="true" parameter to those that were in our post data.
+      res.render("item_form", { title: "Add Item", categories: categories, errors: errors.array() });
+
+    } else {
+      // Data from form is valid. Update the record.
+      const updatedItem = await Item.findByIdAndUpdate(req.params.id, item, {});
+      // Redirect to item detail page.
+      res.redirect(updatedItem.url);
+    }
+  })
+];
