@@ -1,0 +1,29 @@
+extends layout
+
+block content
+  h1= title
+
+  form(method='POST')
+
+    div.form-group
+      input#title.form-control(type='text', placeholder='Name of item' name='title' required value=(undefined===item ? '' : item.title) )
+    
+    div.form-group
+      textarea#summary.form-control(placeholder='Summary' name='summary' rows="5" required)= undefined===item ? '' : item.summary
+
+    div.form-group
+      div
+        for category in categories
+          div(style='display: inline; padding-right:10px;')
+            if category.checked
+              input.checkbox-input(type='checkbox', name='category', id=category._id, value=category._id, checked)
+            else
+              input.checkbox-input(type='checkbox', name='category', id=category._id, value=category._id)
+            label(for=category._id) &nbsp;#{category.name}
+    
+    button.btn.btn-primary(type='submit') Submit
+
+  if errors
+    ul
+      for error in errors
+        li!= error.msg
