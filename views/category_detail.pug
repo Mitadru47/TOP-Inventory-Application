@@ -1,0 +1,25 @@
+extends layout 
+
+block content
+    h1= title
+
+    if(items.length)
+        p 
+            each item, index in items
+                p 
+                    a(href=item.url) #{item.title}
+                p #{item.summary}
+            
+                if index < items.length - 1
+                    br|
+
+                //- This adds a <br> after every item associated with the category 
+                //- except for the last one.
+    
+    else 
+        p There are no items under this category.
+
+    hr
+    p 
+        a(href=category.url + "/update") Update |
+        a(href=category.url + "/delete")  Delete
