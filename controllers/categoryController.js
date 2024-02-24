@@ -61,12 +61,51 @@ exports.category_create_post = [
 
 // Display Category delete form on GET.
 exports.category_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Category delete GET");
+  
+  const [category, items] = await Promise.all([
+    
+    Category.findById(req.params.id).exec(),
+    Item.find({ category: req.params.id}).exec()
+  ]);
+  
+  console.log(items);
+
+  if(category === null){
+
+    const error = new Error("Item not found!");
+    error.status = 404;
+
+    return next(error);
+  }
+
+  res.render("category_delete", { title: "Delete Category", category: category, items: items });
 });
 
 // Handle Category delete on POST.
 exports.category_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Category delete POST");
+  
+  const [category, items] = await Promise.all([
+    
+    Category.findById(req.params.id).exec(),
+    Item.find({ category: req.params.id}).exec()
+  ]);
+
+  if(items.length > 0){
+
+    res.render("category_delete", {
+
+      title: "Delete Category",
+      items: items
+    });
+
+    return;
+
+  } else {
+
+    // Delete object and redirect to the list of categories.
+    await Category.findByIdAndDelete(req.body.categoryid);
+    res.redirect("/catalog/categories");
+  }
 });
 
 // Display Category update form on GET.

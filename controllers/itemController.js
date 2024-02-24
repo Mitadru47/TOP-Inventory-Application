@@ -21,7 +21,7 @@ exports.item_list = asyncHandler(async (req, res, next) => {
   res.render("item_list", { title: "Item List", item_list: items });
 });
 
-// Display detail page for a specific book.
+// Display detail page for a specific item.
 exports.item_detail = asyncHandler(async (req, res, next) => {
   
   const item = await Item.findById(req.params.id).populate("category").exec();
